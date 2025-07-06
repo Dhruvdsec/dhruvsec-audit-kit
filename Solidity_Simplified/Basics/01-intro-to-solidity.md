@@ -33,7 +33,7 @@ Here i am giving the brief intro of the things that we will study further in thi
 Solidity is a **contract-oriented, high-level language** designed for writing and deploying smart contracts on the Ethereum blockchain. It is:
 
 * Statically typed
-* Turing-complete
+* Turing-complete(**Turing complete** means a system can perform **any computation** that a computer can, given enough time and memory.)
 * Influenced by C++, Python, and JavaScript
 
 > Think of Solidity as JavaScript + Types + Blockchain Logic.
