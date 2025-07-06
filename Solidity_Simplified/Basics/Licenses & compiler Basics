@@ -62,182 +62,131 @@ contract HelloWorld {
 
 ---
 
-# ⚙️ `pragma` in Solidity — Explained
+## ⚙️ `pragma` in Solidity — Explained
 
-The `pragma` keyword tells the Solidity compiler to enable specific features or set version requirements — it's a compiler instruction.
+The `pragma` keyword is like a compiler instruction. It tells the Solidity compiler to enable specific features or checks for that particular source file.
 
----
+### 🔑 Key Points:
 
-## 🔎 Key Points
-
-* `pragma` is **file-scoped** — it only applies to the file it's written in
+* `pragma` applies **only** to the file it's written in
 * It does **not** affect imported files
-* You must repeat it in every relevant file
+* You must repeat it in every `.sol` file where it matters
 
 ---
 
-## ✅ Most Common — Version Pragma
+## ✅ Most Common: Solidity Version Pragma
 
 ```solidity
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 ```
 
-> Tells the compiler to compile using Solidity version 0.8.20 or higher (upward compatible)
+This tells the compiler:
+
+> "Compile this file using Solidity version 0.8.20 or compatible upward versions"
+
+You can also specify a range:
 
 ```solidity
 pragma solidity >=0.8.0 <0.9.0;
 ```
 
-> Limits compiler between versions 0.8.0 and 0.9.0 (good for safety in teams)
+---
+
+## ⚙️ Common `pragma` Directives
+
+| Pragma                      | Purpose                                             |
+| --------------------------- | --------------------------------------------------- |
+| `abicoder v2`               | Enables ABI encoder v2 (default from Solidity 0.8+) |
+| `experimental SMTChecker`   | Enables formal verification via SMT solver          |
+| `experimental ABIEncoderV2` | Old encoder (⚠️ deprecated)                         |
 
 ---
 
-## 🛠 Common Pragma Directives
+## 🔄 `pragma abicoder v1` vs `v2`
 
-| Pragma                      | Purpose                                           |
-| --------------------------- | ------------------------------------------------- |
-| `abicoder v2`               | Enables ABI encoder v2 (default in Solidity 0.8+) |
-| `experimental SMTChecker`   | Enables formal verification via SMT solver        |
-| `experimental ABIEncoderV2` | Legacy way to enable encoder v2 (⚠️ deprecated)   |
+Solidity smart contracts need to encode/decode data when calling functions or returning results — especially when structs, arrays, or nested types are involved.
 
----
-
-## 📌 Best Practices
-
-* Lock version for production with `^0.x.x`
-* Use version ranges during development
-* Don't assume pragma applies across imports — always declare explicitly
-
----
-
-## ✅ Real Example
+You control which ABI encoder to use:
 
 ```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
-
-import "./Utils.sol"; // This file must also declare its own pragma
+pragma abicoder v2; // ✅ Recommended
+pragma abicoder v1; // ❌ Legacy
 ```
 
----
-
-# 🔄 `abicoder v1` vs `v2` — ABI Encoding in Solidity
-
-Solidity smart contracts often encode/decode complex data — especially when using **arrays** or **structs**.
-
-The **ABI encoder** decides how this is done.
+* `v2` supports complex types, added safety checks
+* `v1` is outdated and limited
 
 ---
 
-## ✅ Syntax
+## 🧪 Experimental Pragmas
 
-```solidity
-pragma abicoder v2;
-// or
-pragma abicoder v1;
-```
+Used to enable advanced or upcoming compiler features (not enabled by default).
 
----
-
-## ⚙️ Differences
-
-| Feature                 | abicoder v1     | abicoder v2 (Recommended)         |
-| ----------------------- | --------------- | --------------------------------- |
-| Nested Arrays / Structs | ❌ Not Supported | ✅ Fully Supported                 |
-| Safety Checks           | ⚠️ Limited      | ✅ More thorough                   |
-| Gas Usage               | ⛽ Lower         | ⛽ Slightly higher (due to checks) |
-| Default in 0.8+         | ❌ No            | ✅ Yes                             |
-
----
-
-## 📌 TL;DR:
-
-* Use `abicoder v2` if dealing with complex types
-* It’s **default in Solidity 0.8.0+** so no need to declare explicitly
-* Only use `v1` if you’re compiling old code from before v0.8
-
----
-
-# 🧪 Experimental Pragmas
-
-Experimental pragmas unlock **in-development** compiler features. Use them only if you know what you're doing.
-
----
-
-## ✅ Syntax
+### ✅ Syntax:
 
 ```solidity
 pragma experimental SMTChecker;
 ```
 
-> Must be declared in each file you want it applied to
+Just like other pragmas, they're **file-local** — declare them where needed.
 
----
+### 🔬 Supported Experimental Pragmas
 
-## 🧪 Supported Experimental Features
-
-### 1. ⚠️ `ABIEncoderV2` (Deprecated)
+#### 1. ❌ `ABIEncoderV2` (Deprecated)
 
 ```solidity
 pragma experimental ABIEncoderV2;
 ```
 
-* Legacy way to enable encoder v2 in Solidity <0.8
-* Not needed anymore in Solidity >=0.8.0
+* Legacy way to support nested arrays/structs
+* Deprecated since Solidity 0.8.0
+* Use `abicoder v2` instead
 
----
-
-### 2. 🧠 `SMTChecker` — Formal Verification
+#### 2. 🧠 `SMTChecker` — Formal Verification
 
 ```solidity
 pragma experimental SMTChecker;
 ```
 
-* Enables static analysis using SMT solvers like **Z3**
-* Helps catch:
+* Enables static analysis via SMT solvers (e.g., Z3)
+* Detects:
 
-  * 🔥 Logic bugs
-  * 🚫 Integer overflows
-  * 🧱 Unreachable code
-  * ❌ Failing `assert()`
+  * Integer overflows
+  * Unreachable code
+  * Failing asserts
 
----
+### 🛠️ SMT Support
 
-## 🛠️ Using SMTChecker
-
-* Compiler must be built **with SMT support**
-
-✅ Available in:
-
-* Ubuntu PPA versions
-
-❌ Not in:
-
-* Docker images
-* Static builds
-* Remix (browser)
-
-If using `solc-js`:
-
-* Can be enabled with `smtCallback` if solver installed locally
+* Available in: Ubuntu PPA releases
+* **Not available in**: Docker, Windows, or static Linux binaries
+* With `solc-js`, enable via `smtCallback` (only with local SMT solver)
 
 ---
 
-## 📌 When to Use
+## 🔥 SMTChecker — Real Use Cases
 
-Use SMTChecker if you are:
-
-* Auditing contracts
-* Writing critical financial protocols
-* Doing formal verification for DeFi
+* Useful in DeFi contracts
+* Helps catch bugs before deployment
+* Supports audit automation & logic verification
 
 ---
 
-## 🧪 TL;DR Table
+## ⚠️ Caution:
 
-| Pragma         | Status             | Use Case                     |
-| -------------- | ------------------ | ---------------------------- |
-| `ABIEncoderV2` | Deprecated         | Use `abicoder v2` instead    |
-| `SMTChecker`   | Still experimental | Formal verification of logic |
+Experimental pragmas are for **advanced users** only. Use them if:
+
+* You're running a compatible compiler
+* You know what you're enabling
+* You're writing critical, high-assurance contracts
+
+---
+
+## 🧪 TL;DR: Experimental Pragmas Overview
+
+| Pragma         | Status                         | Use Case                         |
+| -------------- | ------------------------------ | -------------------------------- |
+| `ABIEncoderV2` | Deprecated (use `abicoder v2`) | Legacy encoder for nested types  |
+| `SMTChecker`   | Still experimental             | Static bug checking & audit help |
 
 ---
