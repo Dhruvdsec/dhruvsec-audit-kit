@@ -1,19 +1,24 @@
 # 📄 SPDX License Identifiers in Solidity (Simplified)
 
+---
 
 ## 🔐 Why License Matters
 
 When you open-source a smart contract, you’re giving others permission to read, reuse, or build upon your code — but only under certain legal terms. That’s where SPDX license identifiers come in.
 
+---
 
 ## ✅ Syntax (Top of every `.sol` file)
 
+```solidity
 // SPDX-License-Identifier: MIT
+```
 
 This tells the compiler (and the world):
 
 > "I’m open-sourcing this file under the MIT License."
 
+---
 
 ## 📚 Common SPDX License Types
 
@@ -27,6 +32,7 @@ This tells the compiler (and the world):
 
 > ⚠️ `UNLICENSED` ≠ `UNLICENSE` — Don’t get confused
 
+---
 
 ## 📌 Best Practices
 
@@ -34,26 +40,33 @@ This tells the compiler (and the world):
 * Place it at the very top of every `.sol` file
 * Choose the license that fits the level of openness you want
 
+---
 
 ## ✅ Example
 
+```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 contract HelloWorld {
     string public greet = "Hello, world!";
 }
+```
 
+---
 
 ## 🧠 Compiler Notes
 
 * The Solidity compiler does **not** validate the license — it just embeds it in bytecode metadata.
 * SPDX tags are **machine-readable** — useful for automated tools, scanners, and legal audits.
 
+---
+
 # ⚙️ `pragma` in Solidity — Explained
 
 The `pragma` keyword tells the Solidity compiler to enable specific features or set version requirements — it's a compiler instruction.
 
+---
 
 ## 🔎 Key Points
 
@@ -61,17 +74,23 @@ The `pragma` keyword tells the Solidity compiler to enable specific features or 
 * It does **not** affect imported files
 * You must repeat it in every relevant file
 
+---
 
 ## ✅ Most Common — Version Pragma
 
+```solidity
 pragma solidity ^0.8.20;
-
+```
 
 > Tells the compiler to compile using Solidity version 0.8.20 or higher (upward compatible)
 
+```solidity
 pragma solidity >=0.8.0 <0.9.0;
+```
 
 > Limits compiler between versions 0.8.0 and 0.9.0 (good for safety in teams)
+
+---
 
 ## 🛠 Common Pragma Directives
 
@@ -81,6 +100,7 @@ pragma solidity >=0.8.0 <0.9.0;
 | `experimental SMTChecker`   | Enables formal verification via SMT solver        |
 | `experimental ABIEncoderV2` | Legacy way to enable encoder v2 (⚠️ deprecated)   |
 
+---
 
 ## 📌 Best Practices
 
@@ -88,14 +108,18 @@ pragma solidity >=0.8.0 <0.9.0;
 * Use version ranges during development
 * Don't assume pragma applies across imports — always declare explicitly
 
+---
 
 ## ✅ Real Example
 
+```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "./Utils.sol"; // This file must also declare its own pragma
+```
 
+---
 
 # 🔄 `abicoder v1` vs `v2` — ABI Encoding in Solidity
 
@@ -103,13 +127,17 @@ Solidity smart contracts often encode/decode complex data — especially when us
 
 The **ABI encoder** decides how this is done.
 
+---
 
 ## ✅ Syntax
 
+```solidity
 pragma abicoder v2;
 // or
 pragma abicoder v1;
+```
 
+---
 
 ## ⚙️ Differences
 
@@ -120,6 +148,7 @@ pragma abicoder v1;
 | Gas Usage               | ⛽ Lower         | ⛽ Slightly higher (due to checks) |
 | Default in 0.8+         | ❌ No            | ✅ Yes                             |
 
+---
 
 ## 📌 TL;DR:
 
@@ -127,32 +156,42 @@ pragma abicoder v1;
 * It’s **default in Solidity 0.8.0+** so no need to declare explicitly
 * Only use `v1` if you’re compiling old code from before v0.8
 
+---
 
 # 🧪 Experimental Pragmas
 
 Experimental pragmas unlock **in-development** compiler features. Use them only if you know what you're doing.
 
+---
 
 ## ✅ Syntax
 
+```solidity
 pragma experimental SMTChecker;
-
+```
 
 > Must be declared in each file you want it applied to
 
+---
 
 ## 🧪 Supported Experimental Features
 
 ### 1. ⚠️ `ABIEncoderV2` (Deprecated)
 
+```solidity
 pragma experimental ABIEncoderV2;
+```
 
 * Legacy way to enable encoder v2 in Solidity <0.8
 * Not needed anymore in Solidity >=0.8.0
 
+---
+
 ### 2. 🧠 `SMTChecker` — Formal Verification
 
+```solidity
 pragma experimental SMTChecker;
+```
 
 * Enables static analysis using SMT solvers like **Z3**
 * Helps catch:
@@ -161,6 +200,8 @@ pragma experimental SMTChecker;
   * 🚫 Integer overflows
   * 🧱 Unreachable code
   * ❌ Failing `assert()`
+
+---
 
 ## 🛠️ Using SMTChecker
 
@@ -180,6 +221,8 @@ If using `solc-js`:
 
 * Can be enabled with `smtCallback` if solver installed locally
 
+---
+
 ## 📌 When to Use
 
 Use SMTChecker if you are:
@@ -188,6 +231,8 @@ Use SMTChecker if you are:
 * Writing critical financial protocols
 * Doing formal verification for DeFi
 
+---
+
 ## 🧪 TL;DR Table
 
 | Pragma         | Status             | Use Case                     |
@@ -195,3 +240,4 @@ Use SMTChecker if you are:
 | `ABIEncoderV2` | Deprecated         | Use `abicoder v2` instead    |
 | `SMTChecker`   | Still experimental | Formal verification of logic |
 
+---
